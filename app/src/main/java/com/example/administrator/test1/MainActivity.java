@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -69,7 +70,6 @@ public class MainActivity extends Activity{
                             wifiP2pConfig.deviceAddress = device.deviceAddress;
                             wifiP2pConfig.groupOwnerIntent = 0;
                             manager.connect(channel, wifiP2pConfig, null);
-                            sendIPaddress();
                             Toast.makeText(getApplicationContext(), Constants.CLIENT_ADRRESS, Toast.LENGTH_LONG).show();
                         }
                     }
@@ -130,12 +130,25 @@ public class MainActivity extends Activity{
         connectedAndReadyToSendFile = status;
     }
 
-    public void sendIPaddress(){
-        if(wifiInfo.isGroupOwner){
+
+    String ip;
+
+    public void sendIPaddress(WifiP2pInfo info){
+        if(info.isGroupOwner){
             try {
                 serverSocket = new ServerSocket(port);
-                ssocket = serverSocket.accept();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            ssocket=serverSocket.accept();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+
+                }.start();
                 IPreceiver rc = new IPreceiver(ssocket);
                 rc.start();
             } catch (IOException e) {
@@ -143,14 +156,38 @@ public class MainActivity extends Activity{
             }
         }else {
 
-            try {
                 // 서버 연결
-                csocket = new Socket(Constants.HOST_ADRRESS, port);
-                IPsender fs = new IPsender(csocket);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            csocket = new Socket(InetAddress.getByName(Constants.HOST_ADRRESS), port);
+                            ip = csocket.getLocalAddress().getHostAddress();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }.start();
+
+                IPsender fs = new IPsender(ip);
                 fs.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(wifiBroadcastReceiver);
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(wifiBroadcastReceiver);
     }
 }

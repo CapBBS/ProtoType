@@ -66,9 +66,9 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             if(networkState.isConnected())
             {
                 //set client state so that all needed fields to make a transfer are ready
-
                 //activity.setTransferStatus(true);
                 activity.setNetworkToReadyState(true, wifiInfo, device);
+                activity.sendIPaddress(wifiInfo);
 
             }
             else
