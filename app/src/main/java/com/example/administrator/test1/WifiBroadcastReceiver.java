@@ -34,27 +34,13 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
 
         @Override
     public void onReceive(final Context context, Intent intent) {
-        String action = intent.getAction();
+        final String action = intent.getAction();
         if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
             wifiP2pManager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
                 @Override
                 public void onPeersAvailable(WifiP2pDeviceList peers) {
                     activity.wifiP2pDeviceList = peers;
-                    ArrayList<String> deviceNameList = new ArrayList<String>();
-                    for(WifiP2pDevice device : peers.getDeviceList()) {
-                        deviceNameList.add(device.deviceName);
-                    }
-                    int iteration = 0;
-                    if(deviceNameList.size() <= 3) {
-                        iteration = deviceNameList.size();
-                    } else {
-                        iteration = 3;
-                    }
-                    for(int i = 0; i < iteration; i++) {
-                        activity.buttons[i].setEnabled(true);
-                        activity.buttons[i].setVisibility(Button.VISIBLE);
-                        activity.buttons[i].setText(deviceNameList.get(i));
-                    }
+                    activity.displayPeerButtons(peers);
                 }
             });
         }else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
@@ -68,7 +54,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 //set client state so that all needed fields to make a transfer are ready
                 //activity.setTransferStatus(true);
                 activity.setNetworkToReadyState(true, wifiInfo, device);
-                activity.sendIPaddress(wifiInfo);
+                //activity.sendIPaddress(wifiInfo);
 
             }
             else

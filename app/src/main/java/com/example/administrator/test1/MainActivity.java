@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,7 +71,7 @@ public class MainActivity extends Activity{
                             wifiP2pConfig.deviceAddress = device.deviceAddress;
                             wifiP2pConfig.groupOwnerIntent = 0;
                             manager.connect(channel, wifiP2pConfig, null);
-                            Toast.makeText(getApplicationContext(), Constants.CLIENT_ADRRESS, Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(), Constants.CLIENT_ADRRESS, Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -104,19 +105,7 @@ public class MainActivity extends Activity{
 
 
     }
-
-
-
-
-    public void connectpeer(final WifiP2pDeviceList wifiP2pDeviceList) {
-        for(WifiP2pDevice device : wifiP2pDeviceList.getDeviceList()) {
-            WifiP2pConfig config = new WifiP2pConfig();
-            config.groupOwnerIntent = 0;
-            config.deviceAddress = device.deviceAddress;
-            config.wps.setup = WpsInfo.PBC;
-            manager.connect(channel, config, null);
-        }
-    }
+    
 
     public void setNetworkToReadyState(boolean status, WifiP2pInfo info, WifiP2pDevice device)
     {
@@ -190,4 +179,28 @@ public class MainActivity extends Activity{
         super.onPause();
         unregisterReceiver(wifiBroadcastReceiver);
     }
+
+    protected void displayPeerButtons(WifiP2pDeviceList peers) {
+        ArrayList<String> deviceNameList = new ArrayList<String>();
+        for(WifiP2pDevice device : peers.getDeviceList()) {
+            deviceNameList.add(device.deviceName);
+        }
+        int iteration = deviceNameList.size();
+        if(deviceNameList.size() <= 3) {
+
+            for(int i = 0; i < 3; i++) {
+                if(i < deviceNameList.size()) {
+                    buttons[i].setEnabled(true);
+                    buttons[i].setVisibility(Button.VISIBLE);
+                    buttons[i].setText(deviceNameList.get(i));
+                } else {
+                    buttons[iteration].setEnabled(false);
+                    buttons[iteration].setVisibility(Button.INVISIBLE);
+                }
+            }
+        } else {
+        }
+
+    }
+
 }
