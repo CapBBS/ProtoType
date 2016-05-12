@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class MainActivity extends Activity{
 
-    public Button btnFindpeer, btnDevice1, btnDevice2, btnDevice3;
+    public Button btnFindpeer;
 
     Button[] buttons;
 
@@ -52,6 +52,19 @@ public class MainActivity extends Activity{
         for(Button button : buttons) {
             button.setVisibility(Button.INVISIBLE);
             button.setEnabled(false);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for(WifiP2pDevice device : wifiP2pDeviceList.getDeviceList()) {
+                        if(device.deviceName.equals(((Button)v).getText())) {
+                            WifiP2pConfig wifiP2pConfig = new WifiP2pConfig();
+                            wifiP2pConfig.deviceAddress = device.deviceAddress;
+                            wifiP2pConfig.groupOwnerIntent = 0;
+                            manager.connect(channel, wifiP2pConfig, null);
+                        }
+                    }
+                }
+            });
         }
 
 
