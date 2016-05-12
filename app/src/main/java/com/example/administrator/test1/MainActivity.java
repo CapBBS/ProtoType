@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -62,19 +63,32 @@ public class MainActivity extends Activity{
         for(Button button : buttons) {
             button.setVisibility(Button.INVISIBLE);
             button.setEnabled(false);
+            button.setTag("");
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for(WifiP2pDevice device : wifiP2pDeviceList.getDeviceList()) {
-                        if(device.deviceName.equals(((Button)v).getText())) {
+                    if (!((Button) v).getTag().equals("Connected")) {
+                        for (WifiP2pDevice device : wifiP2pDeviceList.getDeviceList()) {
                             WifiP2pConfig wifiP2pConfig = new WifiP2pConfig();
                             wifiP2pConfig.deviceAddress = device.deviceAddress;
                             wifiP2pConfig.groupOwnerIntent = 0;
-                            manager.connect(channel, wifiP2pConfig, null);
-                            //Toast.makeText(getApplicationContext(), Constants.CLIENT_ADRRESS, Toast.LENGTH_LONG).show();
+                            manager.connect(channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
+                                @Override
+                                public void onSuccess() {
+                                    btnFindpeer.setEnabled(false);
+                                    buttons[0].setBackgroundColor(Color.GREEN);
+                                    buttons[0].setTag("Connected");
+                                }
+
+                                @Override
+                                public void onFailure(int reason) {
+
+                                }
+                            });
                         }
                     }
                 }
+
             });
         }
 
@@ -105,7 +119,7 @@ public class MainActivity extends Activity{
 
 
     }
-    
+
 
     public void setNetworkToReadyState(boolean status, WifiP2pInfo info, WifiP2pDevice device)
     {
@@ -145,22 +159,22 @@ public class MainActivity extends Activity{
             }
         }else {
 
-                // 서버 연결
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            csocket = new Socket(InetAddress.getByName(Constants.HOST_ADRRESS), port);
-                            ip = csocket.getLocalAddress().getHostAddress();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+            // 서버 연결
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        csocket = new Socket(InetAddress.getByName(Constants.HOST_ADRRESS), port);
+                        ip = csocket.getLocalAddress().getHostAddress();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                }
 
-                }.start();
+            }.start();
 
-                IPsender fs = new IPsender(ip);
-                fs.start();
+            IPsender fs = new IPsender(ip);
+            fs.start();
 
         }
     }
@@ -169,15 +183,16 @@ public class MainActivity extends Activity{
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(wifiBroadcastReceiver);
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(wifiBroadcastReceiver);
+        try {
+            unregisterReceiver(wifiBroadcastReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void displayPeerButtons(WifiP2pDeviceList peers) {
