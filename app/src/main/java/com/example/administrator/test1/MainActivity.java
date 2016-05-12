@@ -13,7 +13,11 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.List;
 
 /**
@@ -36,6 +40,10 @@ public class MainActivity extends Activity{
     private Intent clientServiceIntent;
     //private WifiP2pDevice targetDevice;
     private WifiP2pInfo wifiInfo;
+
+    private int port = 1111;
+    private ServerSocket serverSocket;
+    private Socket ssocket,csocket;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,8 @@ public class MainActivity extends Activity{
                             wifiP2pConfig.deviceAddress = device.deviceAddress;
                             wifiP2pConfig.groupOwnerIntent = 0;
                             manager.connect(channel, wifiP2pConfig, null);
+                            sendIPaddress();
+                            Toast.makeText(getApplicationContext(), Constants.CLIENT_ADRRESS, Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -118,5 +128,29 @@ public class MainActivity extends Activity{
     public void setTransferStatus(boolean status)
     {
         connectedAndReadyToSendFile = status;
+    }
+
+    public void sendIPaddress(){
+        if(wifiInfo.isGroupOwner){
+            try {
+                serverSocket = new ServerSocket(port);
+                ssocket = serverSocket.accept();
+
+                IPreceiver rc = new IPreceiver(ssocket);
+                rc.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+
+            try {
+                // 서버 연결
+                csocket = new Socket(Constants.HOST_ADRRESS, port);
+                IPsender fs = new IPsender(csocket);
+                fs.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

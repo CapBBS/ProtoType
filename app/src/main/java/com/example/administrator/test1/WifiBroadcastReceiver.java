@@ -10,6 +10,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
 
                 //activity.setTransferStatus(true);
                 activity.setNetworkToReadyState(true, wifiInfo, device);
+
             }
             else
             {
