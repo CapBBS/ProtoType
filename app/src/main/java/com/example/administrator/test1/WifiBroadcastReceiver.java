@@ -9,6 +9,10 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.widget.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,7 +38,22 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             wifiP2pManager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
                 @Override
                 public void onPeersAvailable(WifiP2pDeviceList peers) {
-                    //activity.btnConnect.setEnabled(true);
+                    activity.wifiP2pDeviceList = peers;
+                    ArrayList<String> deviceNameList = new ArrayList<String>();
+                    for(WifiP2pDevice device : peers.getDeviceList()) {
+                        deviceNameList.add(device.deviceName);
+                    }
+                    int iteration = 0;
+                    if(deviceNameList.size() <= 3) {
+                        iteration = deviceNameList.size();
+                    } else {
+                        iteration = 3;
+                    }
+                    for(int i = 0; i < iteration; i++) {
+                        activity.buttons[i].setEnabled(true);
+                        activity.buttons[i].setVisibility(Button.VISIBLE);
+                        activity.buttons[i].setText(deviceNameList.get(i));
+                    }
                 }
             });
         }else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {

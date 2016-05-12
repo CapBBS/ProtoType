@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016-05-12.
  */
@@ -21,12 +23,15 @@ public class MainActivity extends Activity{
 
     public Button btnFindpeer, btnDevice1, btnDevice2, btnDevice3;
 
+    Button[] buttons;
+
     private boolean connectedAndReadyToSendFile;
 
     private WifiP2pManager manager;
     private WifiP2pManager.Channel channel;
     private IntentFilter wifiP2pIntentFilter;
     private WifiBroadcastReceiver wifiBroadcastReceiver;
+    protected WifiP2pDeviceList wifiP2pDeviceList;
 
     private Intent clientServiceIntent;
     //private WifiP2pDevice targetDevice;
@@ -38,17 +43,17 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
 
         btnFindpeer = (Button)findViewById(R.id.btnFindpeer);
-        btnDevice1 = (Button)findViewById(R.id.btnDevice1);
-        btnDevice2 = (Button)findViewById(R.id.btnDevice2);
-        btnDevice3 = (Button)findViewById(R.id.btnDevice3);
 
-        btnDevice1.setVisibility(Button.INVISIBLE);
-        btnDevice2.setVisibility(Button.INVISIBLE);
-        btnDevice3.setVisibility(Button.INVISIBLE);
+        buttons = new Button[3];
+        buttons[0] = (Button)findViewById(R.id.btnDevice1);
+        buttons[1] = (Button)findViewById(R.id.btnDevice2);
+        buttons[2] = (Button)findViewById(R.id.btnDevice3);
 
-        btnDevice1.setEnabled(false);
-        btnDevice2.setEnabled(false);
-        btnDevice3.setEnabled(false);
+        for(Button button : buttons) {
+            button.setVisibility(Button.INVISIBLE);
+            button.setEnabled(false);
+        }
+
 
         wifiP2pIntentFilter = new IntentFilter();
         wifiP2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -63,6 +68,7 @@ public class MainActivity extends Activity{
 
         wifiBroadcastReceiver = new WifiBroadcastReceiver(manager, channel, this);
 
+        registerReceiver(wifiBroadcastReceiver, wifiP2pIntentFilter);
 
 
         btnFindpeer.setOnClickListener(new View.OnClickListener() {
