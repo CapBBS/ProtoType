@@ -19,7 +19,7 @@ import android.widget.Button;
  */
 public class MainActivity extends Activity{
 
-    public Button btnFindpeer, btnConnect;
+    public Button btnFindpeer, btnDevice1, btnDevice2, btnDevice3;
 
     private boolean connectedAndReadyToSendFile;
 
@@ -38,6 +38,17 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
 
         btnFindpeer = (Button)findViewById(R.id.btnFindpeer);
+        btnDevice1 = (Button)findViewById(R.id.btnDevice1);
+        btnDevice2 = (Button)findViewById(R.id.btnDevice2);
+        btnDevice3 = (Button)findViewById(R.id.btnDevice3);
+
+        btnDevice1.setVisibility(Button.INVISIBLE);
+        btnDevice2.setVisibility(Button.INVISIBLE);
+        btnDevice3.setVisibility(Button.INVISIBLE);
+
+        btnDevice1.setEnabled(false);
+        btnDevice2.setEnabled(false);
+        btnDevice3.setEnabled(false);
 
         wifiP2pIntentFilter = new IntentFilter();
         wifiP2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
@@ -51,6 +62,8 @@ public class MainActivity extends Activity{
         channel = manager.initialize(this, getMainLooper(), null);
 
         wifiBroadcastReceiver = new WifiBroadcastReceiver(manager, channel, this);
+
+
 
         btnFindpeer.setOnClickListener(new View.OnClickListener() {
             @Override

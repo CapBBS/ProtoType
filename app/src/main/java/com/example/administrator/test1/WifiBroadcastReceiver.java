@@ -34,7 +34,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             wifiP2pManager.requestPeers(channel, new WifiP2pManager.PeerListListener() {
                 @Override
                 public void onPeersAvailable(WifiP2pDeviceList peers) {
-                    activity.btnConnect.setEnabled(true);
+                    //activity.btnConnect.setEnabled(true);
                 }
             });
         }else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
