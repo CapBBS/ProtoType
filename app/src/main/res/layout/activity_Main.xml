@@ -29,6 +29,7 @@
             android:layout_height="50dp"
             android:text=""
             android:enabled="false"/>
+
         <Button
             android:id="@+id/btnDevice3"
             android:layout_width="80dp"
