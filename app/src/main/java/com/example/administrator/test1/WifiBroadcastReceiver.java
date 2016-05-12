@@ -53,6 +53,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             {
                 //set client state so that all needed fields to make a transfer are ready
                 //activity.setTransferStatus(true);
+                //연결이 실행될때 MainActivity에서 실행할 메소드
                 activity.setNetworkToReadyState(true, wifiInfo, device);
                 //activity.sendIPaddress(wifiInfo);
 
@@ -61,6 +62,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             {
                 //set variables to disable file transfer and reset client back to original state
 
+                //연결이 해제될때 MainActivity에서 실행할 메소드
                 activity.setTransferStatus(false);
                 wifiP2pManager.cancelConnect(channel, null);
 

@@ -75,10 +75,7 @@ public class MainActivity extends Activity{
                             manager.connect(channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
                                 @Override
                                 public void onSuccess() {
-                                    manager.stopPeerDiscovery(channel, null);
-                                    btnFindpeer.setEnabled(false);
-                                    buttons[0].setBackgroundColor(Color.GREEN);
-                                    buttons[0].setTag("Connected");
+
                                 }
 
                                 @Override
@@ -127,6 +124,11 @@ public class MainActivity extends Activity{
         wifiInfo = info;
         //targetDevice = device;
         connectedAndReadyToSendFile = status;
+
+        manager.stopPeerDiscovery(channel, null);
+        btnFindpeer.setEnabled(false);
+        buttons[0].setBackgroundColor(Color.GREEN);
+        buttons[0].setTag("Connected");
     }
 
     public void setTransferStatus(boolean status)
