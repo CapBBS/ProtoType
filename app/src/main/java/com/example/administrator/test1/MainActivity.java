@@ -75,6 +75,7 @@ public class MainActivity extends Activity{
                             manager.connect(channel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
                                 @Override
                                 public void onSuccess() {
+                                    manager.stopPeerDiscovery(channel, null);
                                     btnFindpeer.setEnabled(false);
                                     buttons[0].setBackgroundColor(Color.GREEN);
                                     buttons[0].setTag("Connected");
