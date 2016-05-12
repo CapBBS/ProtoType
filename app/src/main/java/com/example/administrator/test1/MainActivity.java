@@ -2,6 +2,7 @@ package com.example.administrator.test1;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -20,10 +21,16 @@ public class MainActivity extends Activity{
 
     public Button btnFindpeer, btnConnect;
 
+    private boolean connectedAndReadyToSendFile;
+
     private WifiP2pManager manager;
     private WifiP2pManager.Channel channel;
     private IntentFilter wifiP2pIntentFilter;
     private WifiBroadcastReceiver wifiBroadcastReceiver;
+
+    private Intent clientServiceIntent;
+    //private WifiP2pDevice targetDevice;
+    private WifiP2pInfo wifiInfo;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +38,14 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
 
         btnFindpeer = (Button)findViewById(R.id.btnFindpeer);
-        btnConnect = (Button)findViewById(R.id.btnConnect);
 
         wifiP2pIntentFilter = new IntentFilter();
         wifiP2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         wifiP2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         wifiP2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         wifiP2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        connectedAndReadyToSendFile = false;
 
         manager = (WifiP2pManager)getSystemService(Context.WIFI_P2P_SERVICE);
         channel = manager.initialize(this, getMainLooper(), null);
@@ -66,5 +74,17 @@ public class MainActivity extends Activity{
             config.wps.setup = WpsInfo.PBC;
             manager.connect(channel, config, null);
         }
+    }
+
+    public void setNetworkToReadyState(boolean status, WifiP2pInfo info, WifiP2pDevice device)
+    {
+        wifiInfo = info;
+        //targetDevice = device;
+        connectedAndReadyToSendFile = status;
+    }
+
+    public void setTransferStatus(boolean status)
+    {
+        connectedAndReadyToSendFile = status;
     }
 }
