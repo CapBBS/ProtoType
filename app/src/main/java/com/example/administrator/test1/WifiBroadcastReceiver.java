@@ -9,6 +9,7 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 //set client state so that all needed fields to make a transfer are ready
                 //activity.setTransferStatus(true);
                 //연결이 실행될때 MainActivity에서 실행할 메소드
+                Log.i("TAG","와이파이연결정보를 넘김");
                 activity.setNetworkToReadyState(true, wifiInfo, device);
                 //activity.sendIPaddress(wifiInfo);
 

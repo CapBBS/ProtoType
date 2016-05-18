@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:orientation="vertical"
+    android:background="#70999999"
     tools:context="com.example.administrator.test1.MainActivity">
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,63 +37,81 @@
             android:enabled="false"/>
     </LinearLayout>
 
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/Mimage"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:src="@drawable/start"/>
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:onClick="button2"
-        android:background="@drawable/left"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:onClick="button1"
-        android:background="@drawable/play"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:onClick="button3"
-        android:background="@drawable/right"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-</LinearLayout>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/share"
+            android:layout_width="match_parent"
+            android:layout_height="330dp"
+            android:background="@drawable/share"/>
+        <ListView
+            android:id="@+id/lvFileControl"
+            android:layout_width="match_parent"
+            android:layout_height="330dp"
+            android:divider="#f54b4d4b"
+            android:dividerHeight="0.5dp"
+            android:background="#6948"/>
+    </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <ImageView
+            android:id="@+id/Mimage"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/start"/>
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:onClick="button2"
+            android:background="@drawable/left"
+            android:layout_gravity="center"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:onClick="button1"
+            android:background="@drawable/play"
+            android:layout_gravity="center"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:onClick="button3"
+            android:background="@drawable/right"
+            android:layout_gravity="center"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
     <SeekBar
         android:id="@+id/seekBar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/button1" />
-
     <TextView
         android:id="@+id/tvPath"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="17dp"
+        android:layout_marginRight="17dp"
+        android:gravity="center_horizontal"
+        android:textColor="#000000"/>
 
 
-    <ListView
-        android:id="@+id/lvFileControl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#f54b4d4b"
-        android:dividerHeight="0.5dp" />
 
 </LinearLayout>
-
