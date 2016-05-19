@@ -114,7 +114,8 @@ public class ClientService extends IntentService {
                     dos.writeUTF(String.valueOf(musicpos));
 
 
-                    dos.close();                    os.close();
+                    dos.close();
+                    os.close();
 
 
                     clientSocket.close();
