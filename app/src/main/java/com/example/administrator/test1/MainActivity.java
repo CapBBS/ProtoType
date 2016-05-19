@@ -154,25 +154,17 @@ public class MainActivity extends Activity{
         });
 
 
-
-
-        seekbar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.i("Tag",String.valueOf(currentpos));
-                sendstate();
-                return false;
-            }
-        });
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
+                sendstate();
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
+                sendstate();
             }
 
             @Override
