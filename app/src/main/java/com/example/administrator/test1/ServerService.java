@@ -6,6 +6,8 @@ import android.os.ResultReceiver;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,6 +25,8 @@ public class ServerService extends IntentService{
     private ResultReceiver serverResult;
     private File savefile;
     private int port;
+
+    private String state;
 
     public ServerService() {
         super("ServerService");
@@ -59,6 +63,10 @@ public class ServerService extends IntentService{
 
                 InputStream is = socket.getInputStream();
                 InputStreamReader isr = new InputStreamReader(is);
+                DataInputStream dis = new DataInputStream(is);
+
+                state = dis.readUTF();
+                Log.i("TAG",state + "상태수신완료");
 
                 File file = new File("/storage/emulated/0/Download/a.mp3");
 
@@ -67,7 +75,7 @@ public class ServerService extends IntentService{
 
                 FileOutputStream fos = new FileOutputStream(file);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
-                Log.i("TAG","수신 시작");
+                Log.i("TAG","파일 수신 시작");
                 while(true)
                 {
                     bytesRead = is.read(buffer, 0, buffer.length);
@@ -79,11 +87,16 @@ public class ServerService extends IntentService{
                     bos.flush();
                 }
                 Log.i("TAG","다 받음!");
-                serverResult.send(port, null);
+
+                if(!state.equals("music state")) {
+                    serverResult.send(port, null);
+                }
 
 
                 bos.close();
                 socket.close();
+
+                dis.close();
 
 
 

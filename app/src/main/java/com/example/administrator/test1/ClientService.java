@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +28,9 @@ public class ClientService extends IntentService {
     private int port;
     private File fileToSend;
 
+    private Boolean isfile;
+    private String state;
+
     public ClientService() {
         super("ClientService");
         Log.i("TAG","클라이언트 서비스 시작");
@@ -37,6 +41,8 @@ public class ClientService extends IntentService {
 
         port = ((Integer) intent.getExtras().get("port")).intValue();
         fileToSend = (File) intent.getExtras().get("sendtofile");
+        isfile = (Boolean) intent.getExtras().get("sendstate");
+        state = (String) intent.getExtras().get("state");
 
         try {
             InetAddress targetIP = InetAddress.getByName("192.168.49.1");
@@ -46,53 +52,68 @@ public class ClientService extends IntentService {
 
             try {
 
+                if(isfile) {
 
-                clientSocket =new Socket(targetIP, port);
-                os = clientSocket.getOutputStream();
-                PrintWriter pw = new PrintWriter(os);
+                    clientSocket = new Socket(targetIP, port);
+                    os = clientSocket.getOutputStream();
+                    PrintWriter pw = new PrintWriter(os);
 
+                    InputStream is = clientSocket.getInputStream();
+                    InputStreamReader isr = new InputStreamReader(is);
+                    BufferedReader br = new BufferedReader(isr);
 
-                InputStream is = clientSocket.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
+                    Log.i("TAG", "파일 전송 시작");
 
-                Log.i("TAG","파일 전송 시작");
+                    byte[] buffer = new byte[4096];
 
-                byte[] buffer = new byte[4096];
+                    FileInputStream fis = new FileInputStream(fileToSend);
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    // long BytesToSend = fileToSend.length();
+                    while (true) {
+                        int bytesRead = bis.read(buffer, 0, buffer.length);
 
-                FileInputStream fis = new FileInputStream(fileToSend);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                // long BytesToSend = fileToSend.length();
-                while(true)
-                {
-                    int bytesRead = bis.read(buffer, 0, buffer.length);
+                        if (bytesRead == -1) {
+                            break;
+                        }
 
-                    if(bytesRead == -1)
-                    {
-                        break;
+                        //BytesToSend = BytesToSend - bytesRead;
+                        os.write(buffer, 0, bytesRead);
+                        os.flush();
                     }
 
-                    //BytesToSend = BytesToSend - bytesRead;
-                    os.write(buffer,0, bytesRead);
-                    os.flush();
+
+                    fis.close();
+                    bis.close();
+
+                    br.close();
+                    isr.close();
+                    is.close();
+
+                    pw.close();
+                    os.close();
+
+
+                    clientSocket.close();
+
+                    Log.i("TAG", "File Transfer Complete, sent file: " + fileToSend.getName());
                 }
+                else{
+                    Log.i("TAG", "상태 전송 시작");
+                    clientSocket = new Socket(targetIP, port);
+                    os = clientSocket.getOutputStream();
+                    DataOutputStream dos= new DataOutputStream(os);
+
+                    dos.writeUTF(state);
 
 
+                    os.close();
+                    dos.close();
 
-                fis.close();
-                bis.close();
+                    clientSocket.close();
 
-                br.close();
-                isr.close();
-                is.close();
+                    Log.i("TAG", "상태 전송 끝");
 
-                pw.close();
-                os.close();
-
-
-                clientSocket.close();
-
-                Log.i("TAG","File Transfer Complete, sent file: " + fileToSend.getName());
+                }
 
 
             } catch (IOException e) {

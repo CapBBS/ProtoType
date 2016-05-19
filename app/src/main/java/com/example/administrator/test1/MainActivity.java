@@ -235,15 +235,17 @@ public class MainActivity extends Activity{
         clientServiceIntent = new Intent(this, ClientService.class);
         clientServiceIntent.putExtra("port", Integer.valueOf(port));
         clientServiceIntent.putExtra("sendtofile",sendtofile);
+        clientServiceIntent.putExtra("sendstate",true);
         startService(clientServiceIntent);
     }
-/*
-    public void startclientmusic(){
 
-        intent = new Intent(this,ReceiveMusicPlay.class);
-        startActivity(intent);
+    public void sendstate(View view){
+        clientServiceIntent = new Intent(this, ClientService.class);
+        clientServiceIntent.putExtra("port", Integer.valueOf(port));
+        clientServiceIntent.putExtra("state","music state");
+        clientServiceIntent.putExtra("sendstate",false);
+        startService(clientServiceIntent);
     }
-*/
 
     public void setNetworkToReadyState(boolean status, WifiP2pInfo info, WifiP2pDevice device)
     {
