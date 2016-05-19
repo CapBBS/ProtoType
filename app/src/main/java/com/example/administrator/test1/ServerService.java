@@ -2,6 +2,7 @@ package com.example.administrator.test1;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
@@ -27,6 +28,7 @@ public class ServerService extends IntentService{
     private int port;
 
     private String state;
+    private int musicpos;
 
     public ServerService() {
         super("ServerService");
@@ -52,7 +54,7 @@ public class ServerService extends IntentService{
         ServerSocket welcomeSocket = null;
         Socket socket = null;
         try {
-            Log.i("TAG","서버소켓생성");
+            Log.i("TAG", "서버소켓생성");
             welcomeSocket = new ServerSocket(port);
 
 
@@ -66,8 +68,11 @@ public class ServerService extends IntentService{
                 DataInputStream dis = new DataInputStream(is);
 
                 state = dis.readUTF();
-                Log.i("TAG",state + "상태수신완료");
+                musicpos = Integer.valueOf(dis.readUTF());
+                Log.i("TAG", state + "상태수신완료");
 
+
+                if(!state.equals("music state")) {
                 File file = new File("/storage/emulated/0/Download/a.mp3");
 
                 byte[] buffer = new byte[4096];
@@ -75,6 +80,9 @@ public class ServerService extends IntentService{
 
                 FileOutputStream fos = new FileOutputStream(file);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
+
+
+
                 Log.i("TAG","파일 수신 시작");
                 while(true)
                 {
@@ -85,17 +93,18 @@ public class ServerService extends IntentService{
                     }
                     bos.write(buffer, 0, bytesRead);
                     bos.flush();
+
                 }
                 Log.i("TAG","다 받음!");
-
-                if(!state.equals("music state")) {
                     serverResult.send(port, null);
+                }else{
+                    sendsignal(musicpos);
                 }
 
 
-                bos.close();
-                socket.close();
 
+                socket.close();
+                //bos.close();
                 dis.close();
 
 
@@ -107,6 +116,12 @@ public class ServerService extends IntentService{
         Log.i("TAG","이제꺼짐");
 
 
+    }
+
+    public void sendsignal(int pos){
+        Bundle bundle = new Bundle();
+        bundle.putInt("key",pos);
+        serverResult.send(port,bundle);
     }
 
 

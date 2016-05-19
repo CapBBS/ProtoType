@@ -28,6 +28,7 @@ import android.os.Environment;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -59,6 +60,8 @@ public class MainActivity extends Activity{
     Drawable alpha;
     int Marg,Lleng=0;
 
+
+
     private BackPressCloseHandler backPressCloseHandler; // Back키 눌렀을때 처리하는 핸들러
     private List mFileList = new ArrayList(); // List뷰에서 음악파일 리스트
     private List mList = new ArrayList();    //   위와 같음.
@@ -85,7 +88,7 @@ public class MainActivity extends Activity{
 
     //private WifiP2pDevice targetDevice;
     private WifiP2pInfo wifiInfo;
-
+    private int currentpos = 100;
     private int port = 1111;
     private boolean firstclientmusicstart;
 
@@ -153,7 +156,14 @@ public class MainActivity extends Activity{
 
 
 
-
+        seekbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.i("Tag",String.valueOf(currentpos));
+                sendstate();
+                return false;
+            }
+        });
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -171,6 +181,7 @@ public class MainActivity extends Activity{
                 // TODO Auto-generated method stub
                 if (fromUser)
                     music.seekTo(progress);
+                currentpos = progress;
             }
         });
 
@@ -236,14 +247,16 @@ public class MainActivity extends Activity{
         clientServiceIntent.putExtra("port", Integer.valueOf(port));
         clientServiceIntent.putExtra("sendtofile",sendtofile);
         clientServiceIntent.putExtra("sendstate",true);
+        clientServiceIntent.putExtra("musicpos", Integer.valueOf(currentpos));
         startService(clientServiceIntent);
     }
 
-    public void sendstate(View view){
+    public void sendstate(){
         clientServiceIntent = new Intent(this, ClientService.class);
         clientServiceIntent.putExtra("port", Integer.valueOf(port));
-        clientServiceIntent.putExtra("state","music state");
-        clientServiceIntent.putExtra("sendstate",false);
+        clientServiceIntent.putExtra("state", "music state");
+        clientServiceIntent.putExtra("sendstate", false);
+        clientServiceIntent.putExtra("musicpos", Integer.valueOf(currentpos));
         startService(clientServiceIntent);
     }
 
@@ -267,22 +280,29 @@ public class MainActivity extends Activity{
 
                     if(resultCode == port )
                     {
-                        if(firstclientmusicstart) {
-                            runOnUiThread(new Runnable() {
+                        if(resultData == null) {
+                            if (firstclientmusicstart) {
+                                runOnUiThread(new Runnable() {
 
-                                public void run() {
+                                    public void run() {
 
-                                    setContentView(R.layout.receivemusic_play);
+                                        setContentView(R.layout.receivemusic_play);
 
-                                }
+                                    }
 
-                            });
-                            startmusic();
-                            firstclientmusicstart = false;
+                                });
+                                startmusic();
+                                firstclientmusicstart = false;
+                            } else {
+                                startmusic();
+                                Log.i("TAG", "이제 명령을 받는다");
+                            }
                         }else{
-                            startmusic();
-                            Log.i("TAG","이제 명령을 받는다");
+
+                            int getpos = resultData.getInt("key");
+                            setpos(getpos);
                         }
+
                     }
 
                 }
@@ -290,7 +310,7 @@ public class MainActivity extends Activity{
             startService(serverServiceIntent);// 서버 서비스 시작
 
         }else{
-            Log.i("TAG","그룹 오너가 아님");
+            Log.i("TAG", "그룹 오너가 아님");
         }
     }
 
@@ -586,6 +606,11 @@ public class MainActivity extends Activity{
 
         music.setLooping(false);
         music.start();
+
+    }
+
+    public void setpos(int pos){        ;
+        music.seekTo(pos+100);
     }
 
 }

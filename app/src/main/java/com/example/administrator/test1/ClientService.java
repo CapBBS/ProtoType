@@ -30,6 +30,7 @@ public class ClientService extends IntentService {
 
     private Boolean isfile;
     private String state;
+    private int musicpos;
 
     public ClientService() {
         super("ClientService");
@@ -43,6 +44,7 @@ public class ClientService extends IntentService {
         fileToSend = (File) intent.getExtras().get("sendtofile");
         isfile = (Boolean) intent.getExtras().get("sendstate");
         state = (String) intent.getExtras().get("state");
+        musicpos = ((Integer) intent.getExtras().get("musicpos")).intValue();
 
         try {
             InetAddress targetIP = InetAddress.getByName("192.168.49.1");
@@ -61,6 +63,10 @@ public class ClientService extends IntentService {
                     InputStream is = clientSocket.getInputStream();
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
+                    DataOutputStream dos= new DataOutputStream(os);
+
+                    dos.writeUTF("0");
+                    dos.writeUTF("0");
 
                     Log.i("TAG", "파일 전송 시작");
 
@@ -98,16 +104,18 @@ public class ClientService extends IntentService {
                     Log.i("TAG", "File Transfer Complete, sent file: " + fileToSend.getName());
                 }
                 else{
-                    Log.i("TAG", "상태 전송 시작");
+                    Log.i("TAG", "상태 전송 시작"+String.valueOf(musicpos));
+
                     clientSocket = new Socket(targetIP, port);
                     os = clientSocket.getOutputStream();
                     DataOutputStream dos= new DataOutputStream(os);
 
                     dos.writeUTF(state);
+                    dos.writeUTF(String.valueOf(musicpos));
 
 
-                    os.close();
-                    dos.close();
+                    dos.close();                    os.close();
+
 
                     clientSocket.close();
 
