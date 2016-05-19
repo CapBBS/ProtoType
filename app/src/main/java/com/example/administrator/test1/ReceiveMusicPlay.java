@@ -32,7 +32,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
+/*
 public class ReceiveMusicPlay extends AppCompatActivity {
     Button play;
     File file;
@@ -79,7 +79,7 @@ public class ReceiveMusicPlay extends AppCompatActivity {
             public void run(){
                 /**
                  * while문을 돌려서 음악이 실행중일때 게속 돌아가게
-                 */
+
                 while(music.isPlaying()){
                     try {
                         Thread.sleep(1000);
@@ -89,7 +89,7 @@ public class ReceiveMusicPlay extends AppCompatActivity {
                     }
                     /**
                      * music.getCurrentPosition()은 현재 음악 재생 위치를 가져오는 구문
-                     */
+
                     seekbar.setProgress(music.getCurrentPosition());
 
                 }
@@ -208,3 +208,4 @@ public class ReceiveMusicPlay extends AppCompatActivity {
 
 
 }
+*/

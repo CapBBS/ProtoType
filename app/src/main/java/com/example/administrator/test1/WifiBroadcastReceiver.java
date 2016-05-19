@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -13,6 +15,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,12 +29,14 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
         private WifiP2pManager wifiP2pManager;
         private Channel channel;
         private MainActivity activity;
+        private WifiP2pGroup wifiP2pGroup;
 
         public WifiBroadcastReceiver(WifiP2pManager manager, Channel channel, MainActivity activity) {
             super();
             this.channel = channel;
             this.wifiP2pManager = manager;
             this.activity = activity;
+
         }
 
         @Override
@@ -58,6 +64,39 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 Log.i("TAG","와이파이연결정보를 넘김");
                 activity.setNetworkToReadyState(true, wifiInfo, device);
                 //activity.sendIPaddress(wifiInfo);
+
+                wifiP2pManager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
+                    @Override
+                    public void onGroupInfoAvailable(WifiP2pGroup group) {
+                        try {
+                            Method[] methods = WifiP2pManager.class.getMethods();
+                            for (int i = 0; i < methods.length; i++) {
+                                Log.i("TAG",methods[i].getName());
+                                if (methods[i].getName().equals("deletePersistentGroup")) {
+                                    for (int netid = 0; netid < 32; netid++) {
+                                        methods[i].invoke(wifiP2pManager, channel, netid, new WifiP2pManager.ActionListener() {
+                                            @Override
+                                            public void onSuccess() {
+                                                Log.i("TAG", "썽공!");
+                                            }
+
+                                            @Override
+                                            public void onFailure(int reason) {
+                                                Log.i("TAG", "씨래!");
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+
+                        } catch (InvocationTargetException e) {
+                            Log.i("TAG", "인보케이션타겟");
+                        } catch (IllegalAccessException e) {
+                            Log.i("TAG", "일리갈엑세스");
+                        }
+                    }
+                });
+
 
             }
             else

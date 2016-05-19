@@ -18,7 +18,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -26,12 +25,8 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,12 +41,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Administrator on 2016-05-12.
@@ -246,13 +237,13 @@ public class MainActivity extends Activity{
         clientServiceIntent.putExtra("sendtofile",sendtofile);
         startService(clientServiceIntent);
     }
-
+/*
     public void startclientmusic(){
 
         intent = new Intent(this,ReceiveMusicPlay.class);
         startActivity(intent);
     }
-
+*/
 
     public void setNetworkToReadyState(boolean status, WifiP2pInfo info, WifiP2pDevice device)
     {
